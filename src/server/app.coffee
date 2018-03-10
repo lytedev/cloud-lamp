@@ -21,22 +21,23 @@ module.exports =
 		router = new Router()
 
 		router.param 'leds', (req, res, next, value) ->
-			if value of leds then req.leds = leds.getLeds value
+			req.leds = leds.getLeds value
 			next()
 
 		router.param 'state', (req, res, next, value) ->
 			vs = value.toString()
-			if vs == 'true' or vs == '1' or vs == 'on' then req.value = 0
+			if vs == 'true' or vs == '1' or vs == 'on' or vs == 'high'
+				req.value = 0
 			else req.value = 1
 			next()
 
-		router.get '/leds/:leds', (req, res, next) -> res.json req.leds
+		router.get '/leds/:leds', (req, res, next) -> res.json leds.toJson req.leds
 
-		router.post '/leds/:led/:state', (req, res, next) ->
-			led.writeSync req.value for led in req.leds
-			if req.led instanceof Gpio
-				req.led._currentValue = req.led.readSync()
-			res.send JSON.stringify req.led
+		router.post '/leds/:leds/:state', (req, res, next) ->
+			for led of req.leds
+				console.log 'led post', req.leds[led]
+			req.leds[led].writeSync(req.value) for led of req.leds
+			res.json leds.toJson req.leds
 
 		app.use '/api/v1', router
 
