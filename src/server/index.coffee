@@ -1,14 +1,15 @@
 process = require 'process'
-sys = require 'sys'
 onoff = require 'onoff'
 express = require 'express'
 
+Router = express.Router
 Gpio = onoff.Gpio
 
 RED_LED_PIN = process.env.RED_LED_PIN or 16
 GREEN_LED_PIN = process.env.GREEN_LED_PIN or 20
 BLUE_LED_PIN = process.env.BLUE_LED_PIN or 21
 
+leds = {}
 try
 	# might fail to handle the GPIO setup
 	# especially on a development machine
@@ -20,10 +21,25 @@ try
 
 catch e
 	console.log 'Failed to initialize GPIO pins', e
-	sys.exit -1
+	process.exit -1
 
 process.on 'SIGINT', ->
 	for led in leds
 		leds[led].unexport()
 
-console.log leds
+app = express()
+
+router = new Router()
+
+router.use (req, res, next) ->
+	next()
+
+router.param 'led', (req, res, next, value) ->
+	if value of leds
+		req.led = leds[value]
+
+router.get 'leds/:led', (req, res, next) ->
+	console.log req.led
+	next()
+
+app.get '/api/v1'
