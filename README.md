@@ -2,6 +2,17 @@
 
 > The source code for my baby boy's IoT night light cloud lamp.
 
+## Setup
+
+My Raspberry Pi is running Arch Linux ARM, so if you're on Raspbian or anything
+else, you'll need to install the equivalent packages.
+
+```sh
+pacman -S nodejs yarn python python2
+yarn
+yarn start # since this manipulates GPIO pins, it must be run as root
+```
+
 ## Goals
 
 * Controllable from any device on the same network via HTTP endpoints and a web

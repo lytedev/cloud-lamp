@@ -1,3 +1,4 @@
+process = require 'process'
 sys = require 'sys'
 onoff = require 'onoff'
 express = require 'express'
@@ -13,12 +14,16 @@ try
 	# especially on a development machine
 	# (which probably doesn't have any GPIO pins)
 	leds =
-		r: new Gpio RED_LED_PIN
-		g: new Gpio GREEN_LED_PIN
-		b: new Gpio BLUE_LED_PIN
+		r: new Gpio RED_LED_PIN, 'out'
+		g: new Gpio GREEN_LED_PIN, 'out'
+		b: new Gpio BLUE_LED_PIN, 'out'
 
 catch e
 	console.log 'Failed to initialize GPIO pins', e
 	sys.exit -1
+
+process.on 'SIGINT', ->
+	for led in leds
+		leds[led].unexport()
 
 console.log leds
