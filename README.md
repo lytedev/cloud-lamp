@@ -13,6 +13,25 @@ yarn
 yarn start # since this manipulates GPIO pins, it must be run as root
 ```
 
+You'll need to install [PiGPIO][https://github.com/joan2937/pigpio] and set it
+up to run the daemon on startup. You can put this in
+`/etc/systemd/system/pigpiod.service` and run `systemctl daemon-reload &&
+systemctl enable pigpiod && systemctl restart pigpiod` to do just that.
+
+```
+[Unit]
+Description=pigpiod
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/pigpiod
+Type=forking
+PIDFile=/var/run/pigpio.pid
+
+[Install]
+WantedBy=default.target
+```
+
 ## Goals
 
 * Controllable from any device on the same network via HTTP endpoints and a web
