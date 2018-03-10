@@ -45,4 +45,5 @@ router.get 'leds/:led', (req, res, next) ->
 
 app.get '/api/v1'
 
-app.listen PORT
+app.listen PORT, ->
+	console.log "Listening on 0.0.0.0: #{PORT}"
