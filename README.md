@@ -7,12 +7,6 @@
 My Raspberry Pi is running Arch Linux ARM, so if you're on Raspbian or anything
 else, you'll need to install the equivalent packages.
 
-```sh
-pacman -S nodejs yarn python python2
-yarn
-yarn start # since this manipulates GPIO pins, it must be run as root
-```
-
 You'll need to install [PiGPIO][https://github.com/joan2937/pigpio] and set it
 up to run the daemon on startup. You can put this in
 `/etc/systemd/system/pigpiod.service` and run `systemctl daemon-reload &&
