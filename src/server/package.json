@@ -1,0 +1,19 @@
+{
+  "name": "cloud-lamp-server",
+  "scripts": {
+    "start": "coffee index.coffee",
+    "lint": "coffeelint ./**/*.coffee"
+  },
+  "version": "1.0.0",
+  "main": "index.coffee",
+  "repository": "github.com/lytedev/cloud-lamp",
+  "author": "Daniel Flanagan <daniel@lytedev.io>",
+  "license": "GPLv3",
+  "private": true,
+  "dependencies": {
+    "coffeescript": "^2.2.2",
+    "express": "^4.16.2",
+    "onoff": "^2.0.0"
+  },
+  "devDependencies": {}
+}
