@@ -5,6 +5,7 @@ express = require 'express'
 Router = express.Router
 Gpio = onoff.Gpio
 
+PORT = process.env.PORT or 3002
 RED_LED_PIN = process.env.RED_LED_PIN or 16
 GREEN_LED_PIN = process.env.GREEN_LED_PIN or 20
 BLUE_LED_PIN = process.env.BLUE_LED_PIN or 21
@@ -43,3 +44,5 @@ router.get 'leds/:led', (req, res, next) ->
 	next()
 
 app.get '/api/v1'
+
+app.listen PORT
