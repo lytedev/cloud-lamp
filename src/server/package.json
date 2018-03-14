@@ -1,0 +1,10 @@
+{
+  "name": "cloud-lamp-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "GPLv3",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-ws": "^3.0.0"
+  }
+}

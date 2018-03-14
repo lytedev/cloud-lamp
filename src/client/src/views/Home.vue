@@ -1,35 +1,43 @@
 <template lang="pug">
 .page#page--home
-	.field
-		label.tint-red Red
-			span {{ lampColors.red }}
-		input(type="range" step="1" min="0" max="255" :value="lampColors.red" @input="updateLampColor('red', $event)")
-	.field
-		label.tint-green Green
-			span {{ lampColors.green }}
-		input(type="range" step="1" min="0" max="255" :value="lampColors.green" @input="updateLampColor('green', $event)")
-	.field
-		label.tint-blue Blue
-			span {{ lampColors.blue }}
-		input(type="range" step="1" min="0" max="255" :value="lampColors.blue" @input="updateLampColor('blue', $event)")
+	.color-sliders
+		.field
+			label.tint-red Red
+				span {{ lampColor.red }}
+			input(type="range" step="1" min="0" max="255" :value="lampColor.red" @input="updateLampColor('red', $event)")
+		.field
+			label.tint-green Green
+				span {{ lampColor.green }}
+			input(type="range" step="1" min="0" max="255" :value="lampColor.green" @input="updateLampColor('green', $event)")
+		.field
+			label.tint-blue Blue
+				span {{ lampColor.blue }}
+			input(type="range" step="1" min="0" max="255" :value="lampColor.blue" @input="updateLampColor('blue', $event)")
+	.palette
+		color-button(:color="255,255,255")
 </template>
 
 <script lang="ts">
-import { mapGetters } from 'vuex';
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { Getter, Mutation } from 'vuex-class'
+import { Component, Vue } from 'vue-property-decorator'
+import RGBColor from '@/RGBColor'
+import ColorButton from '@/components/ColorButton.vue'
 
 @Component({
-	computed: {
-		...mapGetters(['lampColors'])
+	components: {
+		ColorButton
 	},
-	methods: {
-		updateLampColor: (colorKey, ev) => {
-			// console.log(colorKey, ev.target.value)
-		}
-	}
+	name: 'home',
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+	@Getter lampColor!: RGBColor
+
+	@Mutation setSingleLampColorValue!: any
+
+	updateLampColor (colorKey: string, ev: any): any {
+		this.setSingleLampColorValue({ key: colorKey, value: ev.target.value })
+	}
+}
 </script>
 
 <style lang="stylus">
@@ -39,6 +47,8 @@ export default class Home extends Vue {}
 	justify-content center
 	align-items center
 	padding 2em 3em 1em 3em
+	max-width 500px
+	margin 0 auto
 
 	.field
 		display flex
@@ -68,6 +78,7 @@ export default class Home extends Vue {}
 
 input[type="range"]
 	width 100%
+	height 3em
 	color inherit
-	margin-bottom 1em
+	margin-bottom 2em
 </style>

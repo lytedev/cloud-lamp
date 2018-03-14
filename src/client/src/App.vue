@@ -9,7 +9,7 @@
 					span#cloud(:style="cloudStyle")
 						i.fa.fas.fa-cloud
 	router-view
-	| {{ cloudStyle }}
+	//- | {{ cloudStyle }}
 </template>
 
 <script lang="ts">
@@ -17,6 +17,7 @@ import fontawesome from '@fortawesome/fontawesome'
 import solid from '@fortawesome/fontawesome-free-solid'
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
+import RGBColor from './RGBColor';
 
 fontawesome.library.add(solid.faCloud)
 
@@ -24,10 +25,10 @@ fontawesome.library.add(solid.faCloud)
 	name: 'app'
 })
 export default class App extends Vue {
-	@Getter lampColors
+	@Getter lampColor!: RGBColor
 
 	get cloudStyle(): Object {
-		return { color: `rgb(${this.lampColors.red}, ${this.lampColors.green}, ${this.lampColors.blue})` }
+		return { color: `rgb(${this.lampColor.red}, ${this.lampColor.green}, ${this.lampColor.blue})` }
 	}
 }
 </script>
@@ -60,9 +61,7 @@ html
 	display flex
 	justify-content space-between
 	align-items center
-
-	@media (max-width: 900px)
-		justify-content center
+	justify-content center
 
 	router-link
 		display block
