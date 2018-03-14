@@ -43,12 +43,14 @@ router.param('pin', (req, res, next, val) => {
 router.get('/set-pin/:pin/:pinValue', (req, res, next) => {
 	let data = `p ${req.pin} ${req.pinValue}`
 	fs.writeFile(PIGPIO_FILE, data, (err) => {
-		if (err)
+		if (err) {
 			console.log(`Failed to write ${data} to ${PIGPIO_FILE}`)
-		else
+			return res.json({ message: 'Error', code: 500 })
+		} else {
 			console.log(`Wrote ${req.pinValue} to ${req.rawPin}`)
+			return res.json({ message: 'Success!', code: 200 })
+		}
 	})
-	return res.json({ message: 'Success!', code: 200 })
 })
 
 router.post('/set-pin/:pin/:pinValue', (req, res, next) => {
