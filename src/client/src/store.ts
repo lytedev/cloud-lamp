@@ -1,16 +1,28 @@
+import RGBColor from './RGBColor'
 import Vue from 'vue';
 import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
+export default function CloudLampStore() {
+	return new Vuex.Store({
+		state: {
+			lampColors: {
+				red: 255,
+				green: 255,
+				blue: 255,
+			},
+		},
+		getters: {
+			lampColors (state): RGBColor {
+				return state.lampColors
+			},
+		},
+		mutations: {
 
-  },
-  mutations: {
+		},
+		actions: {
 
-  },
-  actions: {
-
-  },
-});
+		},
+	})
+}
