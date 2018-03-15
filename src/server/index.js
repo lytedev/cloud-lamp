@@ -14,7 +14,7 @@ const app = express()
 let pinMap = {
 	'red': 21,
 	'green': 16,
-	'blue': 15,
+	'blue': 20,
 }
 
 app.get('/', (req, res, next) => {
@@ -41,7 +41,7 @@ router.param('pin', (req, res, next, val) => {
 })
 
 router.get('/set-pin/:pin/:pinValue', (req, res, next) => {
-	let data = `p ${req.pin} ${req.pinValue}`
+	let data = `p ${req.pin} ${req.pinValue}\n`
 	fs.appendFile(PIGPIO_FILE, data, (err) => {
 		if (err) {
 			console.log(`Failed to write ${data} to ${PIGPIO_FILE}: ${err}`)
