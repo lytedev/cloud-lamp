@@ -44,10 +44,10 @@ router.get('/set-pin/:pin/:pinValue', (req, res, next) => {
 	let data = `p ${req.pin} ${req.pinValue}\n`
 	fs.appendFile(PIGPIO_FILE, data, (err) => {
 		if (err) {
-			console.log(`Failed to write ${data} to ${PIGPIO_FILE}: ${err}`)
+			console.log(`Failed to write ${data.trim()} to ${PIGPIO_FILE}: ${err}`)
 			return res.json({ message: 'Error', code: 500 })
 		} else {
-			console.log(`Wrote ${req.pinValue} to ${req.rawPin} (${data} > ${PIGPIO_FILE})`)
+			console.log(`Wrote ${req.pinValue} to ${req.rawPin} (${data.trim()} > ${PIGPIO_FILE})`)
 			return res.json({ message: 'Success!', code: 200 })
 		}
 	})
