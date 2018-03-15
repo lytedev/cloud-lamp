@@ -44,6 +44,10 @@ router.param('pin', (req, res, next, val) => {
 	next()
 })
 
+router.get('/pin-map', (req, res, next) => {
+	return res.json(pinMap)
+})
+
 router.post('/raw-pigpio-commands', (req, res, next) => {
 	console.log('Raw:', req.body.commands.replace('\n', '\\n'))
 	fs.appendFile(PIGPIO_FILE, req.body.commands + '\n', (err) => {
