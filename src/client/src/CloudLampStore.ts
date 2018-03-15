@@ -11,6 +11,9 @@ let defaultBlue = 255
 export default function CloudLampStore() {
 	return new Vuex.Store({
 		state: {
+			cloudLampServer: {
+				host: 'http://pi-lamp:3002',
+			},
 			lampColor: <RGBColor>{
 				red: defaultRed,
 				green: defaultGreen,
