@@ -12,8 +12,8 @@ let HOST = process.env.HOST || '0.0.0.0'
 
 const app = express()
 
-app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 let pinMap = {
 	'red': 20,
@@ -45,7 +45,15 @@ router.param('pin', (req, res, next, val) => {
 })
 
 router.post('/raw-pigpio-commands', (req, res, next) => {
-	console.log('Raw:', req.body)
+	console.log('Raw:', req.body.commands.replace('\n', '\\n'))
+	fs.appendFile(PIGPIO_FILE, req.body.commands + '\n', (err) => {
+		if (err) {
+			res.status(500)
+			return res.json({ message: `Error: ${err}`, code: 500 })
+		} else {
+			res.status(200)
+			return res.json({ message: `Success! (${data.trim().replace('\n', '\\n')} > ${PIGPIO_FILE})`, code: 200 })
+		}
 	next()
 })
 
