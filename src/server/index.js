@@ -1,6 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 const ws = require('express-ws')
+const bodyParser = require('body-parser')
 const pkg = require('./package.json')
 
 const Router = express.Router
@@ -10,6 +11,9 @@ let PORT = process.env.PORT || 3002
 let HOST = process.env.HOST || '0.0.0.0'
 
 const app = express()
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 let pinMap = {
 	'red': 20,
@@ -28,38 +32,36 @@ router.get('/', (req, res, next) => {
 })
 
 router.param('pinValue', (req, res, next, val) => {
-	req.pinValue = val
-	// console.log('req.pinValue', req.pinValue)
+	// TODO: if activeLow, rotate around 255, the max pin value
+	req.originalPinValue = val
+	req.pinValue = Math.abs(val - 255)
 	next()
 })
 
 router.param('pin', (req, res, next, val) => {
-	req.rawPin = val
+	req.pinName = val
 	req.pin = pinMap[val]
-	// console.log('req.pin', req.pin)
 	next()
 })
 
-router.get('/set-pin/:pin/:pinValue', (req, res, next) => {
-	let data = `p ${req.pin} ${req.pinValue}\n`
-	fs.appendFile(PIGPIO_FILE, data, (err) => {
-		if (err) {
-			console.log(`Failed to write ${data.trim()} to ${PIGPIO_FILE}: ${err}`)
-			return res.json({ message: 'Error', code: 500 })
-		} else {
-			console.log(`Wrote ${req.pinValue} to ${req.rawPin} (${data.trim()} > ${PIGPIO_FILE})`)
-			return res.json({ message: 'Success!', code: 200 })
-		}
-	})
+router.post('/raw-pigpio-commands', (req, res, next) => {
+	console.log('Raw:', req.body)
+	next()
 })
 
 router.post('/set-pin/:pin/:pinValue', (req, res, next) => {
-	let data = `p ${req.pin} ${req.pinValue}`
+	let data = `p ${req.pin} ${req.pinValue}\n`
 	fs.appendFile(PIGPIO_FILE, data, (err) => {
-		if (err)
-			console.log(`Failed to write ${data} to ${PIGPIO_FILE}`)
+		if (err) {
+			// console.log(`Failed to write ${data.trim()} to ${PIGPIO_FILE}: ${err}`)
+			res.status(500)
+			return res.json({ message: `Error: ${err}`, code: 500 })
+		} else {
+			// console.log(`Wrote ${req.pinValue} to ${req.pinName} (${data.trim()} > ${PIGPIO_FILE})`)
+			res.status(200)
+			return res.json({ message: `Success! Set ${req.pin} to ${req.originalPinValue}.`, code: 200 })
+		}
 	})
-	return res.json({ message: 'Success!', code: 200 })
 })
 
 app.use('/api/v1', router)
