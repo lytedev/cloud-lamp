@@ -12,9 +12,9 @@ let HOST = process.env.HOST || '0.0.0.0'
 const app = express()
 
 let pinMap = {
-	'red': 21,
+	'red': 20,
 	'green': 16,
-	'blue': 20,
+	'blue': 21,
 }
 
 app.get('/', (req, res, next) => {
