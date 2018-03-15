@@ -56,7 +56,7 @@ router.post('/raw-pigpio-commands', (req, res, next) => {
 			return res.json({ message: `Error: ${err}`, code: 500 })
 		} else {
 			res.status(200)
-			return res.json({ message: `Success! (${data.trim().replace('\n', '\\n')} > ${PIGPIO_FILE})`, code: 200 })
+			return res.json({ message: `Success! (${req.body.commands.trim().replace('\n', '\\n')} > ${PIGPIO_FILE})`, code: 200 })
 		}
 	})
 	// next()
