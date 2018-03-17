@@ -14,11 +14,11 @@
 				span {{ lampColor.blue }}
 			input(type="range" step="1" min="0" max="255" :value="lampColor.blue" @input="updateLampColor('blue', $event)")
 	.palette
-		color-button(:color="255,255,255")
+		color-button(colorString="255,255,255" renderColor="#6ff")
 </template>
 
 <script lang="ts">
-import { Getter, Mutation } from 'vuex-class'
+import { Action, Getter, Mutation } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
 import RGBColor from '@/RGBColor'
 import ColorButton from '@/components/ColorButton.vue'
@@ -32,7 +32,7 @@ import ColorButton from '@/components/ColorButton.vue'
 export default class Home extends Vue {
 	@Getter lampColor!: RGBColor
 
-	@Mutation setSingleLampColorValue!: any
+	@Action setSingleLampColorValue!: any
 
 	updateLampColor (colorKey: string, ev: any): any {
 		this.setSingleLampColorValue({ key: colorKey, value: ev.target.value })
@@ -49,6 +49,9 @@ export default class Home extends Vue {
 	padding 2em 3em 1em 3em
 	max-width 500px
 	margin 0 auto
+
+	.color-sliders
+		width 100%
 
 	.field
 		display flex

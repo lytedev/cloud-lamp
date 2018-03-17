@@ -11,6 +11,7 @@ import RGBColor from '../RGBColor';
 })
 export default class Home extends Vue {
 	colorString!: string
+	renderColor!: string
 	@Mutation setLampColor!: any
 
 	get color (): RGBColor {
