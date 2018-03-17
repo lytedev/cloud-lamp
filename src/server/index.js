@@ -62,7 +62,7 @@ router.post('/raw-pigpio-commands', (req, res, next) => {
 			res.status(500)
 			return res.json({ message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 })
 	}
-	console.log('Raw:', .replace('\n', '\\n'))
+	console.log('Raw:', commands.replace('\n', '\\n'))
 	fs.appendFile(PIGPIO_FILE, req.body.commands + '\n', (err) => {
 		if (err) {
 			res.status(500)
