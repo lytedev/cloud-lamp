@@ -16,7 +16,7 @@
 	.palette
 		color-button(color-string="255,255,255" renderColor="#6ff")
 		color-button(color-string="255,60,60" renderColor="#fff")
-		color-button(color-string="128,30,30" renderColor="#fff")
+		color-button(color-string="128,30,30" renderColor="#888")
 		color-button(color-string="0,0,0" renderColor="#000")
 </template>
 

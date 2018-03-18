@@ -21,7 +21,7 @@ let pinMap = {
 	'blue': 21,
 }
 
-app.use('/', express.static('/static'))
+app.use('/', express.static(__dirname + '/static'))
 
 router = new Router()
 

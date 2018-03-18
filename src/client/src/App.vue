@@ -39,6 +39,7 @@ export default class App extends Vue {
 *, *::before, *::after
 	margin 0
 	padding 0
+	box-sizing border-box
 
 html, body
 	background #fff
