@@ -104,7 +104,7 @@ export default function CloudLampStore() {
 					body: JSON.stringify({ commands: pigpioCommands }),
 				})*/
 				if (ws.readyState !== ws.OPEN) {
-					console.log('waiting for connection...', ws.readyState, ws)
+					// console.log('waiting for connection...', ws.readyState, ws)
 				} else {
 					ws.send(pigpioCommands)
 				}
