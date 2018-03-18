@@ -14,7 +14,10 @@
 				span {{ lampColor.blue }}
 			input(type="range" step="1" min="0" max="255" :value="lampColor.blue" @input="updateLampColor('blue', $event)")
 	.palette
-		color-button(colorString="255,255,255" renderColor="#6ff")
+		color-button(color-string="255,255,255" renderColor="#6ff")
+		color-button(color-string="255,60,60" renderColor="#fff")
+		color-button(color-string="128,30,30" renderColor="#fff")
+		color-button(color-string="0,0,0" renderColor="#000")
 </template>
 
 <script lang="ts">
@@ -44,14 +47,21 @@ export default class Home extends Vue {
 #page--home
 	display flex
 	flex-direction column
-	justify-content center
+	justify-content flex-start
 	align-items center
-	padding 2em 3em 1em 3em
-	max-width 500px
+	width 100%
 	margin 0 auto
+
+	.palette
+		display flex
+		flex 1
+		width 100%
+		flex-wrap wrap
 
 	.color-sliders
 		width 100%
+		max-width 500px
+		padding 2em 3em 0em 3em
 
 	.field
 		display flex

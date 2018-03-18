@@ -54,6 +54,21 @@ html
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	text-align center
+	min-height 100vh
+	display flex
+	flex-direction column
+	justify-content flex-start
+	align-items center
+
+.page
+	flex 1
+	display flex
+	flex-direction column
+	justify-content flex-start
+	align-items center
+
+#site-header
+	width 100%
 
 #nav
 	background #111

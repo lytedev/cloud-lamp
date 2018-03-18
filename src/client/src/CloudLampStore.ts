@@ -1,6 +1,7 @@
 import RGBColor from './RGBColor'
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 
 Vue.use(Vuex);
 
@@ -70,7 +71,10 @@ export default function CloudLampStore() {
 		},
 		actions: {
 			postLampColor (context) {
-				let color: RGBColor = context.getters.lampColor
+				let color: RGBColor = Object.assign({}, context.getters.lampColor)
+				color.red = Math.abs(color.red - 255)
+				color.green = Math.abs(color.green - 255)
+				color.blue = Math.abs(color.blue - 255)
 				let pins = context.getters.pins
 				let url: string = context.getters.apiUrl
 				let pigpioCommands = `p ${pins.red} ${color.red}\np ${pins.green} ${color.green}\np ${pins.blue} ${color.blue}`

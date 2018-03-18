@@ -21,11 +21,7 @@ let pinMap = {
 	'blue': 21,
 }
 
-app.use(express.static('/static'))
-
-app.get('/', (req, res, next) => {
-	return res.json({ name: pkg.name, version: pkg.version })
-})
+app.use('/', express.static('/static'))
 
 router = new Router()
 
