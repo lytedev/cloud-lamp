@@ -1,6 +1,6 @@
 const fs = require('fs')
 const express = require('express')
-const ws = require('express-ws')
+const express_ws = require('express-ws')
 const bodyParser = require('body-parser')
 const pkg = require('./package.json')
 
@@ -12,6 +12,8 @@ let HOST = process.env.HOST || '0.0.0.0'
 
 const app = express()
 
+let ws = express_ws(app)
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -21,7 +23,7 @@ let pinMap = {
 	'blue': 21,
 }
 
-app.use('/', express.static(__dirname + '/static'))
+app.use('/', express.static(__dirname + '/../client/dist'))
 
 router = new Router()
 
@@ -52,22 +54,40 @@ router.get('/pin-map', (req, res, next) => {
 	return res.json(pinMap)
 })
 
+function raw(commands) {
+	if (typeof commands !== 'string') {
+		return { message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 }
+	}
+	if (process.env.DEBUG) console.log('Raw:', commands.replace(/\n/g, '\\n'))
+	fs.appendFile(PIGPIO_FILE, commands + '\n', (err) => {
+		if (err) {
+			return { message: `Error: ${err}`, code: 500 }
+		} else {
+			return { message: `Success! (${commands.trim().replace(/\n/g, '\\n')} > ${PIGPIO_FILE})`, code: 200 }
+		}
+	})
+}
+
+app.ws('/ws-api/v1/raw-pigpio-commands', function(ws, req) {
+  ws.on('message', function(msg) {
+		try {
+			var commands = msg
+		} catch (err) {
+			return ws.send(JSON.stringify({ message: `Error: ${err}`, code: 500 }))
+		}
+		return ws.send(JSON.stringify(raw(commands)))
+  })
+})
+
 router.post('/raw-pigpio-commands', (req, res, next) => {
 	var commands = req.body.commands
 	if (typeof commands !== 'string') {
 			res.status(500)
 			return res.json({ message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 })
 	}
-	console.log('Raw:', commands.replace('\n', '\\n'))
-	fs.appendFile(PIGPIO_FILE, req.body.commands + '\n', (err) => {
-		if (err) {
-			res.status(500)
-			return res.json({ message: `Error: ${err}`, code: 500 })
-		} else {
-			res.status(200)
-			return res.json({ message: `Success! (${req.body.commands.trim().replace('\n', '\\n')} > ${PIGPIO_FILE})`, code: 200 })
-		}
-	})
+	var result = raw(commands)
+	res.status(result.code)
+	return res.json(result)
 	// next()
 })
 

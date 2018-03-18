@@ -2,9 +2,12 @@
   "name": "cloud-lamp-server",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "express": "^4.16.3",
     "express-ws": "^3.0.0"
-  }
+  },
+	"scripts": {
+		"start": "node index.js"
+	}
 }

@@ -27,9 +27,12 @@ export default function CloudLampStore() {
 		state: {
 			cloudLampServer: {
 				protocol: 'http',
-				host: 'pi-lamp',
+				host: 'localhost',
 				port: '3002',
 				apiUrl: '/api/v1',
+				wsProtocol: 'ws',
+				wsApiUrl: '/ws-api/v1',
+				websocket: {},
 			},
 			lampColor: <RGBColor>{
 				red: defaults.color.red,
@@ -43,6 +46,14 @@ export default function CloudLampStore() {
 			},
 		},
 		getters: {
+			websocket (state, getters) {
+				let srv = state.cloudLampServer
+				if (!(srv.websocket instanceof WebSocket)) {
+					return srv.websocket = new WebSocket(getters.wsApiUrl + '/raw-pigpio-commands')
+				} else {
+					return srv.websocket
+				}
+			},
 			pins (state) {
 				return state.pins
 			},
@@ -52,6 +63,10 @@ export default function CloudLampStore() {
 			apiUrl (state): string {
 				var srv = state.cloudLampServer
 				return srv.protocol + '://' + srv.host + ':' + srv.port + srv.apiUrl
+			},
+			wsApiUrl (state): string {
+				var srv = state.cloudLampServer
+				return srv.wsProtocol + '://' + srv.host + ':' + srv.port + srv.wsApiUrl
 			},
 		},
 		mutations: {
@@ -78,7 +93,8 @@ export default function CloudLampStore() {
 				let pins = context.getters.pins
 				let url: string = context.getters.apiUrl
 				let pigpioCommands = `p ${pins.red} ${color.red}\np ${pins.green} ${color.green}\np ${pins.blue} ${color.blue}`
-				fetch(`${url}/raw-pigpio-commands`, {
+				let ws = context.getters.websocket
+				/*fetch(`${url}/raw-pigpio-commands`, {
 					method: 'POST',
 					headers: {
 						'content-type': 'application/json'
@@ -86,7 +102,12 @@ export default function CloudLampStore() {
 					mode: 'cors',
 					redirect: 'follow',
 					body: JSON.stringify({ commands: pigpioCommands }),
-				})
+				})*/
+				if (ws.readyState !== ws.OPEN) {
+					console.log('waiting for connection...', ws.readyState, ws)
+				} else {
+					ws.send(pigpioCommands)
+				}
 			},
 			setSingleLampColorValue (context, payload) {
 				context.commit('setSingleLampColorValue', payload)
