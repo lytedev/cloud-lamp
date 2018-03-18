@@ -27,12 +27,13 @@ export default function CloudLampStore() {
 		state: {
 			cloudLampServer: {
 				protocol: 'http',
-				host: 'localhost',
+				host: 'cloudlamp',
 				port: '3002',
 				apiUrl: '/api/v1',
 				wsProtocol: 'ws',
 				wsApiUrl: '/ws-api/v1',
-				websocket: {},
+				websocket: <WebSocket>{},
+				ws_tracker: 0,
 			},
 			lampColor: <RGBColor>{
 				red: defaults.color.red,
@@ -48,10 +49,36 @@ export default function CloudLampStore() {
 		getters: {
 			websocket (state, getters) {
 				let srv = state.cloudLampServer
-				if (!(srv.websocket instanceof WebSocket)) {
-					return srv.websocket = new WebSocket(getters.wsApiUrl + '/raw-pigpio-commands')
+				return srv.websocket instanceof WebSocket ? srv.websocket : getters.newWebsocket
+			},
+			newWebsocket (state, getters) {
+				let srv = state.cloudLampServer
+				console.log('NEW WEBSOCKET')
+				Vue.set(srv, 'websocket', new WebSocket(getters.wsApiUrl + '/raw-pigpio-commands'))
+				srv.websocket.addEventListener('open', (ev) => {
+					state.cloudLampServer.ws_tracker++
+					// srv.websocket = Object.assign({}, srv.websocket) // force notify changes?
+					console.log('ws open')
+					console.log(getters.isConnected)
+				})
+				return srv.websocket
+			},
+			isConnected (state, getters): boolean {
+				let t = state.cloudLampServer.ws_tracker
+				let ws = getters.websocket
+				console.log('checking isConnected...')
+				if (!(ws instanceof WebSocket)) {
+					console.log('not a websocket')
+					return false
+				} else if (!('readyState' in ws)) {
+					console.log('no ready state')
+					return false
+				} else if (ws.readyState !== ws.OPEN) {
+					console.log('ready state not open')
+					return false
 				} else {
-					return srv.websocket
+					console.log('connected')
+					return true
 				}
 			},
 			pins (state) {
@@ -103,9 +130,14 @@ export default function CloudLampStore() {
 					redirect: 'follow',
 					body: JSON.stringify({ commands: pigpioCommands }),
 				})*/
+				if (!('readyState' in ws)) {
+					console.log('not a websocket', ws)
+					return
+				}
 				if (ws.readyState !== ws.OPEN) {
-					// console.log('waiting for connection...', ws.readyState, ws)
+					console.log('waiting for connection...', ws.readyState, ws)
 				} else {
+					console.log('sending commands', pigpioCommands.replace(/\n/g, '\\n'))
 					ws.send(pigpioCommands)
 				}
 			},

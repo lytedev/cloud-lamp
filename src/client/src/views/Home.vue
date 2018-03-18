@@ -34,11 +34,13 @@ import ColorButton from '@/components/ColorButton.vue'
 })
 export default class Home extends Vue {
 	@Getter lampColor!: RGBColor
+	@Getter isConnected!: boolean
 
 	@Action setSingleLampColorValue!: any
 
 	updateLampColor (colorKey: string, ev: any): any {
-		this.setSingleLampColorValue({ key: colorKey, value: ev.target.value })
+		if (this.isConnected)
+			this.setSingleLampColorValue({ key: colorKey, value: ev.target.value })
 	}
 }
 </script>

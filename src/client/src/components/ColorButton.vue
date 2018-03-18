@@ -3,7 +3,7 @@ button.color-button(@click='updateLampColor' :style='style')
 </template>
 
 <script lang="ts">
-import { Action } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import RGBColor from '../RGBColor';
 
@@ -14,6 +14,9 @@ export default class Home extends Vue {
 	@Prop() colorString!: string
 	@Prop({ default: '' }) text!: string
 	@Prop() renderColor!: string
+
+	@Getter isConnected!: boolean
+
 	@Action setLampColor!: any
 
 	get style () {
@@ -30,8 +33,8 @@ export default class Home extends Vue {
 	}
 
 	updateLampColor () {
-		// console.log(this.color)
-		this.setLampColor(this.color)
+		if (this.isConnected)
+			this.setLampColor(this.color)
 	}
 }
 </script>

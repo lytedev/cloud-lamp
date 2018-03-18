@@ -3,11 +3,13 @@
 	header#site-header
 		nav#nav
 			.nav-left
-				router-link#logo(to="/")
+				router-link#logo.nav-item(to="/")
 					strong Cloud
 					| Lamp
-					span#cloud(:style="cloudStyle")
-						i.fa.fas.fa-cloud
+			.nav-right
+				span#cloud.fa-layers.fa-fw.fa-2x.nav-item(:style="cloudStyle")
+					i.fa.fas.fa-cloud
+					i.fa.fas.fa-ban(data-fa-transform="shrink-6 down-1" :style="disconnectedStyle")
 	router-view
 	//- | {{ cloudStyle }}
 </template>
@@ -19,16 +21,21 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
 import RGBColor from './RGBColor';
 
-fontawesome.library.add(solid.faCloud)
+fontawesome.library.add(solid.faCloud, solid.faBan)
 
 @Component({
 	name: 'app'
 })
 export default class App extends Vue {
 	@Getter lampColor!: RGBColor
+	@Getter isConnected!: boolean
 
 	get cloudStyle(): Object {
-		return { color: `rgb(${this.lampColor.red}, ${this.lampColor.green}, ${this.lampColor.blue})` }
+		return { color: this.isConnected ? `rgb(${Math.max(17, this.lampColor.red)}, ${Math.max(17, this.lampColor.green)}, ${Math.max(17, this.lampColor.blue)})` : '#fff' }
+	}
+
+	get disconnectedStyle(): Object {
+		return { color: '#f30', visibility: this.isConnected ? 'visible' : 'hidden' }
 	}
 }
 </script>
@@ -40,6 +47,9 @@ export default class App extends Vue {
 	margin 0
 	padding 0
 	box-sizing border-box
+
+.fa-layers
+	box-sizing content-box
 
 html, body
 	background #fff
@@ -77,27 +87,19 @@ html
 	display flex
 	justify-content space-between
 	align-items center
-	justify-content center
 
 	router-link
 		display block
 
 	#logo
 		font-size 3.2rem
+
+	.nav-item
 		display block
 		padding 0.5em
-		color inherit
+		color #fff
 		text-decoration none
 		font-weight 300
 		line-height 1.4em
 		letter-spacing -0.2rem
-
-		svg
-			margin-left 0.25em
-
-	a
-		color $brand-primary-color
-
-		&.router-link-exact-active
-			color $brand-primary-color
 </style>
