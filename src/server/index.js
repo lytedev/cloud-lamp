@@ -32,9 +32,9 @@ router.get('/', (req, res, next) => {
 })
 
 router.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
 })
 
 router.param('pinValue', (req, res, next, val) => {
@@ -69,14 +69,14 @@ function raw(commands) {
 }
 
 app.ws('/ws-api/v1/raw-pigpio-commands', function(ws, req) {
-  ws.on('message', function(msg) {
+	ws.on('message', function(msg) {
 		try {
 			var commands = msg
 		} catch (err) {
 			return ws.send(JSON.stringify({ message: `Error: ${err}`, code: 500 }))
 		}
 		return ws.send(JSON.stringify(raw(commands)))
-  })
+	})
 })
 
 router.post('/raw-pigpio-commands', (req, res, next) => {
