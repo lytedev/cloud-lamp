@@ -27,7 +27,7 @@ export default function CloudLampStore() {
 		state: {
 			cloudLampServer: {
 				protocol: 'http',
-				host: 'localhost',
+				host: 'cloudlamp',
 				port: '3002',
 				apiUrl: '/api/v1',
 				wsProtocol: 'ws',
