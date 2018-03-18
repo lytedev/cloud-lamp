@@ -30,7 +30,7 @@ export default class Home extends Vue {
 	}
 
 	updateLampColor () {
-		console.log(this.color)
+		// console.log(this.color)
 		this.setLampColor(this.color)
 	}
 }

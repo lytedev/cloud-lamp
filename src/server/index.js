@@ -55,16 +55,18 @@ router.get('/pin-map', (req, res, next) => {
 })
 
 function raw(commands) {
-	if (typeof commands !== 'string') {
-		return { message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 }
-	}
-	if (process.env.DEBUG) console.log('Raw:', commands.replace(/\n/g, '\\n'))
-	fs.appendFile(PIGPIO_FILE, commands + '\n', (err) => {
-		if (err) {
-			return { message: `Error: ${err}`, code: 500 }
-		} else {
-			return { message: `Success! (${commands.trim().replace(/\n/g, '\\n')} > ${PIGPIO_FILE})`, code: 200 }
+	return new Promise(function(resolve, reject) {
+		if (typeof commands !== 'string') {
+			return reject({ message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 })
 		}
+		if (process.env.DEBUG) console.log('Raw:', commands.replace(/\n/g, '\\n'))
+		fs.appendFile(PIGPIO_FILE, commands + '\n', (err) => {
+			if (err) {
+				reject({ message: `Error: ${err}`, code: 500 })
+			} else {
+				resolve({ message: `Success! (${commands.trim().replace(/\n/g, '\\n')} > ${PIGPIO_FILE})`, code: 200 })
+			}
+		})
 	})
 }
 
@@ -75,7 +77,14 @@ app.ws('/ws-api/v1/raw-pigpio-commands', function(ws, req) {
 		} catch (err) {
 			return ws.send(JSON.stringify({ message: `Error: ${err}`, code: 500 }))
 		}
-		return ws.send(JSON.stringify(raw(commands)))
+		raw(commands).then(
+			(result) => ws.send(JSON.stringify(results))
+		).catch(
+			(errResult) => {
+				ws.send(JSON.stringify(errResult))
+				console.error(errResult)
+			}
+		)
 	})
 })
 
@@ -85,9 +94,18 @@ router.post('/raw-pigpio-commands', (req, res, next) => {
 			res.status(500)
 			return res.json({ message: 'Error: JSON key "commands" was not a string or was missing entirely', code: 500 })
 	}
-	var result = raw(commands)
-	res.status(result.code)
-	return res.json(result)
+	raw(commands).then(
+		(result) => {
+			res.status(result.code)
+			res.json(result)
+		}
+	).catch(
+		(errResult) => {
+			console.error(errResult)
+			res.status(result.code)
+			res.json(result)
+		}
+	)
 	// next()
 })
 
