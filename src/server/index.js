@@ -78,7 +78,7 @@ app.ws('/ws-api/v1/raw-pigpio-commands', function(ws, req) {
 			return ws.send(JSON.stringify({ message: `Error: ${err}`, code: 500 }))
 		}
 		raw(commands).then(
-			(result) => ws.send(JSON.stringify(results))
+			(result) => ws.send(JSON.stringify(result))
 		).catch(
 			(errResult) => {
 				ws.send(JSON.stringify(errResult))
