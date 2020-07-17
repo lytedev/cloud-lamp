@@ -15,7 +15,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "@types/node": "^10.11.2",
     "babel-loader": "^8.0.3",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.19",
     "pug": "^2.0.1",
     "pug-loader": "^2.3.0",
     "pug-plain-loader": "^1.0.0",
